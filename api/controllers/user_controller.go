@@ -408,7 +408,7 @@ func (server *Server) SendMail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// err = sm.SendGridMail()
-	err = sendMail.SendEmail("", "Default")
+	err = sendMail.SendEmail("", "ResetPassword")
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return

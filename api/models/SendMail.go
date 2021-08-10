@@ -53,6 +53,9 @@ func (sm *SendMail) SendEmail(password string, email_type string) error {
 		path = "./html/welcome_email_template.html"
 		//fmt.Print(" " + path)
 	}
+	if email_type == "ResetPassword" {
+		path = "./html/password_reset_email.html"
+	}
 
 	var err error
 	t, err := template.ParseFiles(path)
