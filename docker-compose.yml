@@ -21,6 +21,9 @@ services:
         dockerfile: Dockerfile
         context: .
       environment:
+        # Front-end Details
+        FRONT_END_PORT: 3000
+        FRONT_END_HOST: localhost
         # Postgres Details
         DB_HOST: postgres
         DB_DRIVER: postgres

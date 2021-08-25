@@ -10,6 +10,9 @@ import (
 
 func SetMiddlewareJSON(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "*")
+		w.Header().Set("Access-Control-Allow-Headers", "Authorization")
 		w.Header().Set("Content-Type", "application/json")
 		next(w, r)
 	}

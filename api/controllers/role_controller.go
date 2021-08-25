@@ -221,7 +221,7 @@ func (server *Server) UpdateRole(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Param id path int true "id of the Role"
-// @Success 204 
+// @Success 204
 // @Security ApiKeyAuth
 // @Router /roles/{id} [delete]
 func (server *Server) DeleteRole(w http.ResponseWriter, r *http.Request) {
@@ -262,7 +262,7 @@ func (server *Server) DeleteRole(w http.ResponseWriter, r *http.Request) {
 // @Produce  json
 // @Param id path int true "id of the Role"
 // @Param permission body models.User_Role_Payload true "User Role Payload"
-// @Success 200 
+// @Success 200
 // @Security ApiKeyAuth
 // @Router /roles/{id}/users [post]
 func (server *Server) AddUsersToRole(w http.ResponseWriter, r *http.Request) {
@@ -309,7 +309,7 @@ func (server *Server) AddUsersToRole(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 
 			formattedError := customErrorFormat.FormatError(err.Error())
-	
+
 			responses.ERROR(w, http.StatusInternalServerError, formattedError)
 			return
 		}
@@ -327,7 +327,7 @@ func (server *Server) AddUsersToRole(w http.ResponseWriter, r *http.Request) {
 // @Produce  json
 // @Param id1 path int true "id of the Role"
 // @Param id2 path int true "id of the User"
-// @Success 200 
+// @Success 200
 // @Security ApiKeyAuth
 // @Router /roles/{id1}/users/{id2} [delete]
 func (server *Server) DeleteUsersFromRole(w http.ResponseWriter, r *http.Request) {
@@ -371,7 +371,7 @@ func (server *Server) DeleteUsersFromRole(w http.ResponseWriter, r *http.Request
 // @Produce  json
 // @Param id path int true "id of the Role"
 // @Param permission body models.Role_Permission_Payload true "Role Permission Payload"
-// @Success 200 
+// @Success 200
 // @Security ApiKeyAuth
 // @Router /roles/{id}/permissions [post]
 func (server *Server) AddPermissionsToRole(w http.ResponseWriter, r *http.Request) {
@@ -418,7 +418,7 @@ func (server *Server) AddPermissionsToRole(w http.ResponseWriter, r *http.Reques
 		if err != nil {
 
 			formattedError := customErrorFormat.FormatError(err.Error())
-	
+
 			responses.ERROR(w, http.StatusInternalServerError, formattedError)
 			return
 		}
@@ -435,7 +435,7 @@ func (server *Server) AddPermissionsToRole(w http.ResponseWriter, r *http.Reques
 // @Produce  json
 // @Param id1 path int true "id of the Role"
 // @Param id2 path int true "id of the Permission"
-// @Success 200 
+// @Success 200
 // @Security ApiKeyAuth
 // @Router /roles/{id1}/permissions/{id2} [delete]
 func (server *Server) DeletePermissionsFromRole(w http.ResponseWriter, r *http.Request) {

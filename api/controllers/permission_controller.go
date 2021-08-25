@@ -225,7 +225,7 @@ func (server *Server) UpdatePermission(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Param id path int true "id of the Permission"
-// @Success 204 
+// @Success 204
 // @Security ApiKeyAuth
 // @Router /permissions/{id} [delete]
 func (server *Server) DeletePermission(w http.ResponseWriter, r *http.Request) {
@@ -270,7 +270,7 @@ func (server *Server) HasPermission(r *http.Request, p []string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	
+
 	var permissions []string
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		uid, err := uuid.Parse(fmt.Sprint(claims["user_id"]))

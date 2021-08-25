@@ -176,10 +176,13 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusUnauthorized, err)
 		return
 	}
-	check, err := server.HasPermission(r, []string{"USERS_CREATE"})
-	if !check || err != nil {
-		responses.ERROR(w, http.StatusForbidden, errors.New("Forbidden"))
-		return
+	isSelfEdit := server.IsSelfEditRequest(r)
+	if !isSelfEdit {
+		check, err := server.HasPermission(r, []string{"USERS_CREATE"})
+		if !check || err != nil {
+			responses.ERROR(w, http.StatusForbidden, errors.New("Forbidden"))
+			return
+		}
 	}
 
 	vars := mux.Vars(r)
@@ -273,6 +276,7 @@ func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
 // @Security ApiKeyAuth
 // @Router /user/me [get]
 func (server *Server) GetLoggedInUser(w http.ResponseWriter, r *http.Request) {
+	//w.Header().Set("Access-Control-Allow-Origin", "*")
 	err := auth.CheckBlacklistedJWT(server.TTLCache, r)
 	if err != nil {
 		responses.ERROR(w, http.StatusUnauthorized, err)

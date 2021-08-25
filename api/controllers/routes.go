@@ -14,7 +14,7 @@ func (s *Server) initializeRoutes() {
 
 	// Heartbeat Route
 	s.Router.HandleFunc("/heartbeat", middleware.SetMiddlewareJSON(s.Heartbeat)).Methods("GET")
-	
+
 	// SignUp Route
 	s.Router.HandleFunc("/signup", middleware.SetMiddlewareJSON(s.SignUp)).Methods("POST")
 
@@ -29,7 +29,7 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/logout/{provider}", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.OauthLogout))).Methods("POST")
 
 	// Users routes
-	s.Router.HandleFunc("/user/me", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.GetLoggedInUser))).Methods("GET")
+	s.Router.HandleFunc("/user/me", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.GetLoggedInUser))).Methods("GET", "OPTIONS")
 	s.Router.HandleFunc("/users", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.CreateUser))).Methods("POST")
 	s.Router.HandleFunc("/users", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.GetUsers))).Methods("GET")
 	s.Router.HandleFunc("/users/{id}", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.GetUser))).Methods("GET")
@@ -63,5 +63,9 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/roles/{id1}/permissions/{id2}", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.DeletePermissionsFromRole))).Methods("DELETE")
 
 	// Swagger
-    s.Router.PathPrefix("/swagger").Handler(httpSwagger.WrapHandler)
+	s.Router.PathPrefix("/swagger").Handler(httpSwagger.WrapHandler)
+
+	//Mock Test Api
+	//s.Router.HandleFunc("/test/{id}", middleware.SetMiddlewareJSON(s.GetTest)).Methods("PUT")
+
 }
