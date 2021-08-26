@@ -22,7 +22,7 @@ import (
 type Login struct {
 	Email    string `gorm:"size:100;not null;unique" json:"email"`
 	Password string `gorm:"size:100;not null;" json:"password,omitempty"`
-	DeviceID string `gorm:"size:255;not null;" json:"device_id"`
+	DeviceID string `gorm:"size:255;not null;" json:"deviceID"`
 }
 
 type Refresh struct {
@@ -117,6 +117,7 @@ func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
+
 	token, err := server.SignIn(user.Email, user.Password, login.DeviceID, "local")
 	if err != nil {
 		formattedError := customErrorFormat.FormatError(err.Error())

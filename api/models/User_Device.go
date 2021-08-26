@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -9,18 +10,20 @@ import (
 )
 
 type User_Device struct {
-	ID        			uuid.UUID  	`gorm:"primary_key;type:uuid" json:"id"`
-	DeviceID  			string    	`gorm:"size:255;not null;unique" json:"device_id"`
-	IsRefreshActive  	bool    	`gorm:"default:true" json:"is_refresh_active"`
-	UserID 				uuid.UUID  	`gorm:"type:uuid;not null" json:"user_id"`
-	CreatedAt 			time.Time 	`gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
-	CreatedBy 			uuid.UUID 	`gorm:"type:uuid;not null" json:"created_by"`
-	UpdatedAt 			time.Time 	`gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
-	UpdatedBy 			uuid.UUID 	`gorm:"type:uuid;not null" json:"updated_by"`
+	ID              uuid.UUID `gorm:"primary_key;type:uuid" json:"id"`
+	DeviceID        string    `gorm:"size:255;not null;unique" json:"device_id"`
+	IsRefreshActive bool      `gorm:"default:true" json:"is_refresh_active"`
+	UserID          uuid.UUID `gorm:"type:uuid;not null" json:"user_id"`
+	CreatedAt       time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
+	CreatedBy       uuid.UUID `gorm:"type:uuid;not null" json:"created_by"`
+	UpdatedAt       time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+	UpdatedBy       uuid.UUID `gorm:"type:uuid;not null" json:"updated_by"`
 }
 
-func (ud *User_Device) SaveUserDevice(db *gorm.DB) (error) {
+func (ud *User_Device) SaveUserDevice(db *gorm.DB) error {
 	var err error
+	fmt.Print("the device id is: " + ud.DeviceID)
+
 	err = db.Debug().Create(&ud).Error
 	if err != nil {
 		return err
@@ -45,8 +48,8 @@ func (ud *User_Device) UpdateAUserDevice(db *gorm.DB, uid uuid.UUID, tuid uuid.U
 	db = db.Debug().Model(&User_Device{}).Where("user_id = ?", uid).Take(&User_Device{}).UpdateColumns(
 		map[string]interface{}{
 			"is_refresh_active": isRefreshActive,
-			"updated_at": time.Now(),
-			"updated_by": tuid,
+			"updated_at":        time.Now(),
+			"updated_by":        tuid,
 		},
 	)
 	if db.Error != nil {
@@ -59,7 +62,7 @@ func (ud *User_Device) UpdateAUserDevice(db *gorm.DB, uid uuid.UUID, tuid uuid.U
 	return ud, nil
 }
 
-func (ud *User_Device) DeleteAUserDevice(db *gorm.DB, uid uuid.UUID) (error) {
+func (ud *User_Device) DeleteAUserDevice(db *gorm.DB, uid uuid.UUID) error {
 
 	db = db.Debug().Model(&User_Device{}).Where("user_id = ?", uid).Take(&User_Device{}).Delete(&User_Device{})
 
