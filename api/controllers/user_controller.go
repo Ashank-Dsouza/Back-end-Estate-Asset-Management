@@ -176,6 +176,70 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusUnauthorized, err)
 		return
 	}
+	check, err := server.HasPermission(r, []string{"USERS_CREATE"})
+	if !check || err != nil {
+		responses.ERROR(w, http.StatusForbidden, errors.New("Forbidden"))
+		return
+	}
+
+	vars := mux.Vars(r)
+	uid, err := uuid.Parse(vars["id"])
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+	fetchUser := models.User{}
+	updateUser, err := fetchUser.FindUserByID(server.DB, uid)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+	err = json.Unmarshal(body, &updateUser)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+	authID, err := auth.ExtractTokenID(r)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
+		return
+	}
+	tokenID, err := uuid.Parse(authID)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
+		return
+	}
+	updatedUser, err := updateUser.UpdateAUser(server.DB, uid, tokenID)
+	if err != nil {
+		formattedError := customErrorFormat.FormatError(err.Error())
+		responses.ERROR(w, http.StatusInternalServerError, formattedError)
+		return
+	}
+	responses.JSON(w, http.StatusOK, models.PrepareResponse(updatedUser))
+}
+
+// EditUser godoc
+// @Summary A user edits his/her information
+// @Description Edit a user by ID. Only the user himself/herself has access this API.
+// @Tags User
+// @Accept  json
+// @Produce  json
+// @Param id path int true "ID of the user to be updated"
+// @Param user body models.CreateUser true "Update User"
+// @Success 200 {object} models.UserResponse
+// @Security ApiKeyAuth
+// @Router /user/edit/{id} [put]
+func (server *Server) EditUser(w http.ResponseWriter, r *http.Request) {
+	err := auth.CheckBlacklistedJWT(server.TTLCache, r)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnauthorized, err)
+		return
+	}
 	isSelfEdit := server.IsSelfEditRequest(r)
 	if !isSelfEdit {
 		check, err := server.HasPermission(r, []string{"USERS_CREATE"})

@@ -29,7 +29,7 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/logout/{provider}", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.OauthLogout))).Methods("POST")
 
 	// Users routes
-	s.Router.HandleFunc("/user/me", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.GetLoggedInUser))).Methods("GET", "OPTIONS")
+	s.Router.HandleFunc("/user/me", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.GetLoggedInUser))).Methods("GET")
 	s.Router.HandleFunc("/users", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.CreateUser))).Methods("POST")
 	s.Router.HandleFunc("/users", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.GetUsers))).Methods("GET")
 	s.Router.HandleFunc("/users/{id}", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.GetUser))).Methods("GET")

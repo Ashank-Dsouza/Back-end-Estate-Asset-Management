@@ -14,68 +14,68 @@ import (
 )
 
 type User struct {
-	ID        	uuid.UUID  	`gorm:"primary_key;type:uuid" json:"id"`
-	UserName  	string    	`gorm:"size:255;not null;unique" json:"username"`
-	FirstName  	string    	`gorm:"size:255;not null" json:"firstname"`
-	LastName  	string    	`gorm:"size:255;not null" json:"lastname"`
-	Email     	string    	`gorm:"size:100;not null;unique" json:"email"`
-	Password  	string    	`gorm:"size:100;not null;" json:"password,omitempty"`
-	CreatedAt 	time.Time 	`gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
-	CreatedBy 	uuid.UUID 	`gorm:"type:uuid;not null" json:"created_by"`
-	UpdatedAt 	time.Time 	`gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
-	UpdatedBy 	uuid.UUID 	`gorm:"type:uuid;not null" json:"updated_by"`
-	Enabled	  	bool		`gorm:"default:true" json:"enabled"`
-	Provider	string		`gorm:"size:255;not null" json:"provider"`
-	Roles	  	[]*Role		`gorm:"many2many:user_roles" json:"roles,omitempty"`
+	ID        uuid.UUID `gorm:"primary_key;type:uuid" json:"id"`
+	UserName  string    `gorm:"size:255;not null;unique" json:"username"`
+	FirstName string    `gorm:"size:255;not null" json:"firstname"`
+	LastName  string    `gorm:"size:255;not null" json:"lastname"`
+	Email     string    `gorm:"size:100;not null;unique" json:"email"`
+	Password  string    `gorm:"size:100;not null;" json:"password,omitempty"`
+	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
+	CreatedBy uuid.UUID `gorm:"type:uuid;not null" json:"created_by"`
+	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+	UpdatedBy uuid.UUID `gorm:"type:uuid;not null" json:"updated_by"`
+	Enabled   bool      `gorm:"default:true" json:"enabled"`
+	Provider  string    `gorm:"size:255;not null" json:"provider"`
+	Roles     []*Role   `gorm:"many2many:user_roles" json:"roles,omitempty"`
 }
 
 type CreateUser struct {
-	UserName  	string    	`gorm:"size:255;not null;unique" json:"username"`
-	FirstName  	string    	`gorm:"size:255;not null" json:"firstname"`
-	LastName  	string    	`gorm:"size:255;not null" json:"lastname"`
-	Email     	string    	`gorm:"size:100;not null;unique" json:"email"`
-	Password  	string    	`gorm:"size:100;not null;" json:"password,omitempty"`
+	UserName  string `gorm:"size:255;not null;unique" json:"username"`
+	FirstName string `gorm:"size:255;not null" json:"firstname"`
+	LastName  string `gorm:"size:255;not null" json:"lastname"`
+	Email     string `gorm:"size:100;not null;unique" json:"email"`
+	Password  string `gorm:"size:100;not null;" json:"password,omitempty"`
 }
 
 type EnableUser struct {
-	Enabled	  	bool		`gorm:"default:true" json:"enabled"`
+	Enabled bool `gorm:"default:true" json:"enabled"`
 }
 
 type UpdateUser struct {
-	UserName  	string    	`gorm:"size:255;not null;unique" json:"username"`
-	FirstName  	string    	`gorm:"size:255;not null" json:"firstname"`
-	LastName  	string    	`gorm:"size:255;not null" json:"lastname"`
+	UserName  string `gorm:"size:255;not null;unique" json:"username"`
+	FirstName string `gorm:"size:255;not null" json:"firstname"`
+	LastName  string `gorm:"size:255;not null" json:"lastname"`
 }
 
 type UserResponse struct {
-	ID        	uuid.UUID  	`gorm:"primary_key;type:uuid" json:"id"`
-	UserName  	string    	`gorm:"size:255;not null;unique" json:"username"`
-	FirstName  	string    	`gorm:"size:255;not null" json:"firstname"`
-	LastName  	string    	`gorm:"size:255;not null" json:"lastname"`
-	Email     	string    	`gorm:"size:100;not null;unique" json:"email"`
-	CreatedAt 	time.Time 	`gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
-	CreatedBy 	uuid.UUID 	`gorm:"type:uuid;not null" json:"created_by"`
-	UpdatedAt 	time.Time 	`gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
-	UpdatedBy 	uuid.UUID 	`gorm:"type:uuid;not null" json:"updated_by"`
-	Enabled	  	bool		`gorm:"default:true" json:"enabled"`
-	Provider	string		`gorm:"size:255;not null" json:"provider"`
-	Roles	  	[]*Role		`gorm:"many2many:user_roles" json:"roles,omitempty"`
+	ID        uuid.UUID `gorm:"primary_key;type:uuid" json:"id"`
+	UserName  string    `gorm:"size:255;not null;unique" json:"username"`
+	FirstName string    `gorm:"size:255;not null" json:"firstname"`
+	LastName  string    `gorm:"size:255;not null" json:"lastname"`
+	Email     string    `gorm:"size:100;not null;unique" json:"email"`
+	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
+	CreatedBy uuid.UUID `gorm:"type:uuid;not null" json:"created_by"`
+	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+	UpdatedBy uuid.UUID `gorm:"type:uuid;not null" json:"updated_by"`
+	Enabled   bool      `gorm:"default:true" json:"enabled"`
+	Provider  string    `gorm:"size:255;not null" json:"provider"`
+	Roles     []*Role   `gorm:"many2many:user_roles" json:"roles,omitempty"`
 }
 
 type LoginResponse struct {
-	AccessToken		string    	`gorm:"size:255;not null;" json:"access_token"`
-	RefreshToken	uuid.UUID  	`gorm:"size:100;not null;" json:"refresh_token"`
-	ExpiryDate 		int64		`gorm:"default:0" json:"expiry_date"`
-	DeviceID		string    	`gorm:"size:255;not null;" json:"device_id"`
+	AccessToken  string    `gorm:"size:255;not null;" json:"access_token"`
+	RefreshToken uuid.UUID `gorm:"size:100;not null;" json:"refresh_token"`
+	ExpiryDate   int64     `gorm:"default:0" json:"expiry_date"`
+	DeviceID     string    `gorm:"size:255;not null;" json:"device_id"`
 }
 
 type Set_User_Password_Payload struct {
-	Password  	string    	`gorm:"size:100;not null;" json:"password,omitempty"`
+	Password string `gorm:"size:100;not null;" json:"password,omitempty"`
 }
 
 type Forgot_User_Password_Payload struct {
-	Email     	string    	`gorm:"size:100;not null;unique" json:"email"`
-	Password  	string    	`gorm:"size:100;not null;" json:"password,omitempty"`
+	Email    string `gorm:"size:100;not null;unique" json:"email"`
+	Password string `gorm:"size:100;not null;" json:"password,omitempty"`
 }
 
 func Hash(password string) ([]byte, error) {
@@ -228,10 +228,34 @@ func (u *User) UpdateAUser(db *gorm.DB, uid uuid.UUID, tuid uuid.UUID) (*User, e
 	db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).UpdateColumns(
 		map[string]interface{}{
 			"user_name":  u.UserName,
-			"first_name":  u.FirstName,
-			"last_name": u.LastName,
+			"first_name": u.FirstName,
+			"last_name":  u.LastName,
 			"updated_at": time.Now(),
 			"updated_by": tuid,
+			"email":      u.Email,
+			"password":   u.Password,
+		},
+	)
+	if db.Error != nil {
+		return &User{}, db.Error
+	}
+	// This is the display the updated user
+	err := db.Debug().Model(&User{}).Where("id = ?", uid).Preload("Roles").Preload("Roles.Permissions").Take(&u).Error
+	if err != nil {
+		return &User{}, err
+	}
+	return u, nil
+}
+
+func (u *User) EditAUser(db *gorm.DB, uid uuid.UUID, tuid uuid.UUID) (*User, error) {
+
+	db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).UpdateColumns(
+		map[string]interface{}{
+			"first_name": u.FirstName,
+			"last_name":  u.LastName,
+			"updated_at": time.Now(),
+			"updated_by": tuid,
+			"email":      u.Email,
 		},
 	)
 	if db.Error != nil {
@@ -249,7 +273,7 @@ func (u *User) EnableDisableUser(db *gorm.DB, uid uuid.UUID, tuid uuid.UUID) (*U
 
 	db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).UpdateColumns(
 		map[string]interface{}{
-			"enabled":  u.Enabled,
+			"enabled":    u.Enabled,
 			"updated_at": time.Now(),
 			"updated_by": tuid,
 		},
@@ -289,7 +313,7 @@ func (sup *Set_User_Password_Payload) ResetPassword(db *gorm.DB, uid uuid.UUID, 
 
 	db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).UpdateColumns(
 		map[string]interface{}{
-			"password":  password,
+			"password":   password,
 			"updated_at": time.Now(),
 			"updated_by": tuid,
 		},
@@ -322,7 +346,7 @@ func (fup *Forgot_User_Password_Payload) ForgetPassword(db *gorm.DB) error {
 
 	db = db.Debug().Model(&User{}).Where("email = ?", fup.Email).Take(&User{}).UpdateColumns(
 		map[string]interface{}{
-			"password":  password,
+			"password":   password,
 			"updated_at": time.Now(),
 		},
 	)
