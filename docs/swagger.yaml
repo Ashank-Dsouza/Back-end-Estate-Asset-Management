@@ -711,6 +711,23 @@ paths:
       summary: Get the Logged in User details
       tags:
       - User
+  /user/edit/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Used by the user to edit their profile information.
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/models.UserResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Used by the user to edit their profile information.
+      tags:
+      - User
   /users:
     get:
       consumes:

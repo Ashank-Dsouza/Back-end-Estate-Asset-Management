@@ -799,7 +799,7 @@
                 "tags": [
                     "User"
                 ],
-                "summary": "Update user's profile information",
+                "summary": "Update user's profile information.",
                 "responses": {
                     "204": {
                         "description": "No Content",
