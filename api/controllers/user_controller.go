@@ -242,11 +242,8 @@ func (server *Server) EditUser(w http.ResponseWriter, r *http.Request) {
 	}
 	isSelfEdit := server.IsSelfEditRequest(r)
 	if !isSelfEdit {
-		check, err := server.HasPermission(r, []string{"USERS_CREATE"})
-		if !check || err != nil {
-			responses.ERROR(w, http.StatusForbidden, errors.New("Forbidden"))
-			return
-		}
+		responses.ERROR(w, http.StatusForbidden, errors.New("Unauthorized"))
+		return
 	}
 
 	vars := mux.Vars(r)
@@ -281,7 +278,7 @@ func (server *Server) EditUser(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
 		return
 	}
-	updatedUser, err := updateUser.UpdateAUser(server.DB, uid, tokenID)
+	updatedUser, err := updateUser.EditAUser(server.DB, uid, tokenID)
 	if err != nil {
 		formattedError := customErrorFormat.FormatError(err.Error())
 		responses.ERROR(w, http.StatusInternalServerError, formattedError)
