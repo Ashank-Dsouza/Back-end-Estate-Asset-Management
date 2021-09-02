@@ -22,6 +22,7 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/login", middleware.SetMiddlewareJSON(s.Login)).Methods("POST")
 	s.Router.HandleFunc("/refresh", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.Refresh))).Methods("POST")
 	s.Router.HandleFunc("/logout", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.Logout))).Methods("POST")
+	s.Router.HandleFunc("/confirmEmail", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.ConfirmEmail))).Methods("PUT")
 
 	// OAuth Route
 	s.Router.HandleFunc("/auth/{provider}", middleware.SetMiddlewareJSON(s.OauthSignIn)).Methods("GET")

@@ -247,6 +247,34 @@ func (u *User) UpdateAUser(db *gorm.DB, uid uuid.UUID, tuid uuid.UUID) (*User, e
 	return u, nil
 }
 
+func (email *Confirm_email) ConfirmAUserEmail(db *gorm.DB, uid uuid.UUID) (*User_Email, error) {
+
+	u := User_Email{}
+	err := db.Debug().Model(&User_Email{}).Where("id = ?", uid).Take(&u).Error
+	if err != nil {
+		return &User_Email{}, err
+	}
+
+	if u.ID != uid {
+		return &User_Email{}, err
+	}
+	db = db.Debug().Model(&User_Email{}).Where("confirmation_token = ?", email.ConfirmationToken).Take(&u).UpdateColumns(
+		map[string]interface{}{
+			"confirmed": true,
+		},
+	)
+	if db.Error != nil {
+		return &User_Email{}, db.Error
+	}
+
+	// This is the display the updated user
+	err = db.Debug().Model(&User_Email{}).Where("id = ?", uid).Take(&u).Error
+	if err != nil {
+		return &User_Email{}, err
+	}
+	return &u, nil
+}
+
 func (u *User) EditAUser(db *gorm.DB, uid uuid.UUID, tuid uuid.UUID) (*User, error) {
 
 	db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).UpdateColumns(
