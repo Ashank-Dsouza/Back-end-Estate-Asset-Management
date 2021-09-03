@@ -10,18 +10,10 @@ import (
 	"strconv"
 
 	"github.com/badoux/checkmail"
-	"github.com/google/uuid"
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 	gomail "gopkg.in/mail.v2"
 )
-
-type User_Email struct {
-	Email             string    `gorm:"size:100;not null;unique" json:"email"`
-	ID                uuid.UUID `gorm:"primary_key;type:uuid" json:"id"`
-	Confirmed         bool      `gorm:"default:false" json:"enabled"`
-	ConfirmationToken uuid.UUID `gorm:"type:uuid;not null;unique" json:"confirmation_token"`
-}
 
 type SendMail struct {
 	Email string

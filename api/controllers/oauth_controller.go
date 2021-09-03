@@ -16,7 +16,7 @@ import (
 )
 
 func (server *Server) OauthSignIn(w http.ResponseWriter, r *http.Request) {
-	
+
 	if gothUser, err := gothic.CompleteUserAuth(w, r); err == nil {
 		user := models.User{}
 		fetchUser, _ := user.FindUserByEmail(server.DB, gothUser.Email)
@@ -27,7 +27,7 @@ func (server *Server) OauthSignIn(w http.ResponseWriter, r *http.Request) {
 				responses.ERROR(w, http.StatusUnprocessableEntity, formattedError)
 				return
 			}
-			responses.JSON(w, http.StatusOK, token)			
+			responses.JSON(w, http.StatusOK, token)
 		} else {
 			fetchUser.Email = gothUser.Email
 			if len(gothUser.FirstName) > 0 {
@@ -47,10 +47,10 @@ func (server *Server) OauthSignIn(w http.ResponseWriter, r *http.Request) {
 			fetchUser.CreatedAt = time.Now()
 			fetchUser.UpdatedBy = userID
 			fetchUser.UpdatedAt = time.Now()
-			userCreated, err := fetchUser.SaveUser(server.DB)
+			userCreated, err := fetchUser.SaveUser(server.DB, false)
 			if err != nil {
 				fmt.Println(err)
-				formattedError := customErrorFormat.FormatError(err.Error())		
+				formattedError := customErrorFormat.FormatError(err.Error())
 				responses.ERROR(w, http.StatusInternalServerError, formattedError)
 				return
 			}
@@ -67,8 +67,8 @@ func (server *Server) OauthSignIn(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (server *Server) OauthSuccessCallback(w http.ResponseWriter, r *http.Request) {	
-	
+func (server *Server) OauthSuccessCallback(w http.ResponseWriter, r *http.Request) {
+
 	if gothUser, err := gothic.CompleteUserAuth(w, r); err == nil {
 		user := models.User{}
 		fetchUser, _ := user.FindUserByEmail(server.DB, gothUser.Email)
@@ -79,15 +79,15 @@ func (server *Server) OauthSuccessCallback(w http.ResponseWriter, r *http.Reques
 				responses.ERROR(w, http.StatusUnprocessableEntity, formattedError)
 				return
 			}
-			responses.JSON(w, http.StatusOK, token)			
+			responses.JSON(w, http.StatusOK, token)
 		} else {
 			vars := mux.Vars(r)
-    		provider, ok := vars["provider"]
-    		if !ok {
-        		fmt.Println("provider is missing in parameters")
+			provider, ok := vars["provider"]
+			if !ok {
+				fmt.Println("provider is missing in parameters")
 				responses.ERROR(w, http.StatusInternalServerError, errors.New("provider is missing in parameters"))
 				return
-    		}
+			}
 			fetchUser.Email = gothUser.Email
 			if len(gothUser.FirstName) > 0 {
 				fetchUser.FirstName = gothUser.FirstName
@@ -108,10 +108,10 @@ func (server *Server) OauthSuccessCallback(w http.ResponseWriter, r *http.Reques
 			fetchUser.UpdatedAt = time.Now()
 			fetchUser.Enabled = true
 			fetchUser.Provider = provider
-			userCreated, err := fetchUser.SaveUser(server.DB)
+			userCreated, err := fetchUser.SaveUser(server.DB, false)
 			if err != nil {
 				fmt.Println(err)
-				formattedError := customErrorFormat.FormatError(err.Error())		
+				formattedError := customErrorFormat.FormatError(err.Error())
 				responses.ERROR(w, http.StatusInternalServerError, formattedError)
 				return
 			}
@@ -137,8 +137,8 @@ func (server *Server) OauthSuccessCallback(w http.ResponseWriter, r *http.Reques
 // @Success 200 {object} string
 // @Security ApiKeyAuth
 // @Router /logout/{provider} [post]
-func (server *Server) OauthLogout(w http.ResponseWriter, r *http.Request) {	
-	
+func (server *Server) OauthLogout(w http.ResponseWriter, r *http.Request) {
+
 	gothic.Logout(w, r)
 	server.Logout(w, r)
 }

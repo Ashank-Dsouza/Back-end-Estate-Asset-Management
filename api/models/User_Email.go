@@ -7,6 +7,13 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+type User_Email struct {
+	Email             string    `gorm:"size:100;not null;unique" json:"email"`
+	ID                uuid.UUID `gorm:"primary_key;type:uuid" json:"id"`
+	Confirmed         bool      `gorm:"default:false" json:"enabled"`
+	ConfirmationToken uuid.UUID `gorm:"type:uuid;not null;unique" json:"confirmation_token"`
+}
+
 type Confirm_email struct {
 	ConfirmationToken uuid.UUID `gorm:"size:100;not null" json:"confirmation_token"`
 }

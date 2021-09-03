@@ -66,7 +66,7 @@ func (server *Server) SignUp(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
-	userCreated, err := user.SaveUser(server.DB)
+	userCreated, err := user.SaveUser(server.DB, false)
 
 	if err != nil {
 		fmt.Println(err)
