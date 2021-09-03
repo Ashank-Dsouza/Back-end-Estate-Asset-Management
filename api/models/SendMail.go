@@ -20,7 +20,6 @@ type SendMail struct {
 }
 
 func (sm *SendMail) SendEmail(password string, email_type string) error {
-	fmt.Print("inside SendEmail")
 
 	if len(sm.Email) < 1 {
 		return errors.New("Required Email")
@@ -50,6 +49,7 @@ func (sm *SendMail) SendEmail(password string, email_type string) error {
 	path := "./html/email_template.html"
 
 	if email_type == "Welcome" {
+		//templateData.Password = models.GetFrontEndUrl() + "/" + sm.Link.String()
 		path = "./html/welcome_email_template.html"
 		//fmt.Print(" " + path)
 	}

@@ -70,7 +70,7 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
-	userCreated, err := user.SaveUser(server.DB, true)
+	userCreated, err := user.SaveUser(server.DB, true, uuid.Nil)
 
 	if err != nil {
 		fmt.Println(err)

@@ -66,7 +66,14 @@ func (server *Server) SignUp(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
-	userCreated, err := user.SaveUser(server.DB, false)
+	var ConfirmationTOKEN, gen_error = uuid.NewRandom()
+
+	if gen_error != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+
+	userCreated, err := user.SaveUser(server.DB, false, ConfirmationTOKEN)
 
 	if err != nil {
 		fmt.Println(err)
@@ -77,7 +84,9 @@ func (server *Server) SignUp(w http.ResponseWriter, r *http.Request) {
 	}
 	sm := models.SendMail{}
 	sm.Email = userCreated.Email
-	err = sm.SendEmail(password, "Welcome")
+
+	var link = models.GetFrontEndUrl() + "/confirm-email/" + ConfirmationTOKEN.String()
+	err = sm.SendEmail(link, "Welcome")
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return

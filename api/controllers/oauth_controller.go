@@ -47,7 +47,7 @@ func (server *Server) OauthSignIn(w http.ResponseWriter, r *http.Request) {
 			fetchUser.CreatedAt = time.Now()
 			fetchUser.UpdatedBy = userID
 			fetchUser.UpdatedAt = time.Now()
-			userCreated, err := fetchUser.SaveUser(server.DB, false)
+			userCreated, err := fetchUser.SaveUser(server.DB, false, uuid.Nil)
 			if err != nil {
 				fmt.Println(err)
 				formattedError := customErrorFormat.FormatError(err.Error())
@@ -108,7 +108,7 @@ func (server *Server) OauthSuccessCallback(w http.ResponseWriter, r *http.Reques
 			fetchUser.UpdatedAt = time.Now()
 			fetchUser.Enabled = true
 			fetchUser.Provider = provider
-			userCreated, err := fetchUser.SaveUser(server.DB, false)
+			userCreated, err := fetchUser.SaveUser(server.DB, false, uuid.Nil)
 			if err != nil {
 				fmt.Println(err)
 				formattedError := customErrorFormat.FormatError(err.Error())

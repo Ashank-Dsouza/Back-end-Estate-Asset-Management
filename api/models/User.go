@@ -183,21 +183,15 @@ func (u *User) Validate(action string) error {
 	}
 }
 
-func (u *User) SaveUser(db *gorm.DB, IsEmailConfirmed bool) (*User, error) {
-	return u.SaveUserWithEmail(db, IsEmailConfirmed)
+func (u *User) SaveUser(db *gorm.DB, IsEmailConfirmed bool, ConfirmationTOKEN uuid.UUID) (*User, error) {
+	return u.SaveUserWithEmail(db, IsEmailConfirmed, ConfirmationTOKEN)
 }
 
-func (u *User) SaveUserWithEmail(db *gorm.DB, IsEmailConfirmed bool) (*User, error) {
+func (u *User) SaveUserWithEmail(db *gorm.DB, IsEmailConfirmed bool, ConfirmationTOKEN uuid.UUID) (*User, error) {
 	var err error
 	err = db.Debug().Create(&u).Error
 	if err != nil {
 		return &User{}, err
-	}
-
-	var ConfirmationTOKEN, gen_error = uuid.NewRandom()
-
-	if gen_error != nil {
-		return &User{}, gen_error
 	}
 
 	var user_email = User_Email{
@@ -210,7 +204,7 @@ func (u *User) SaveUserWithEmail(db *gorm.DB, IsEmailConfirmed bool) (*User, err
 	err = db.Debug().Create(&user_email).Error
 
 	if err != nil {
-		return &User{}, gen_error
+		return &User{}, err
 	}
 
 	return u, nil
