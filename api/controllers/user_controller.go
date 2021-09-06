@@ -244,7 +244,7 @@ func (server *Server) EditUser(w http.ResponseWriter, r *http.Request) {
 	}
 	isSelfEdit := server.IsSelfEditRequest(r)
 	if !isSelfEdit {
-		responses.ERROR(w, http.StatusForbidden, errors.New("Unauthorized"))
+		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
 		return
 	}
 

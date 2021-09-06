@@ -305,7 +305,6 @@ func (u *User) EditAUser(db *gorm.DB, uid uuid.UUID, tuid uuid.UUID) (*User, err
 			"last_name":  u.LastName,
 			"updated_at": time.Now(),
 			"updated_by": tuid,
-			"email":      u.Email,
 		},
 	)
 	if db.Error != nil {
