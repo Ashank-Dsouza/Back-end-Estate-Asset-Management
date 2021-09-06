@@ -164,7 +164,7 @@
                     <table border="0" cellpadding="0" cellspacing="0">
                       <tr>
                         <td align="center" style="border-radius: 6px;">
-                          <div class="password-details" id="passowrd-details"> We may need to send you critical information about our service and it is important that we have an accurate email address. </div>
+                          <div style="font-size: 16px; line-height: 24px;" class="password-details" id="passowrd-details">  <p >We may need to send you critical information about our service and it is important that we have an accurate email address. </p></div>
                         </td>
                       </tr>
                     </table>
@@ -178,8 +178,8 @@
           <!-- start copy -->
            <tr>
             <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
-              <p style="margin: 0;">If that doesn't work, copy and paste the following link in your browser:</p>
-              <p style="margin: 0;"><a href="http://google.com" target="_blank">Confirm Email {{.Password}}</a></p>
+              <p style="margin: 0;">To confirm the email please copy the link below and paste it into the ACTIVE tab where you have logged in(NOT A NEW TAB):</p>
+              <p style="margin: 0;"><a href={{.Password}} target="_blank">{{.Password}}</a></p>
             </td>
           </tr> 
           <!-- end copy -->

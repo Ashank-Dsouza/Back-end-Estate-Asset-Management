@@ -39,21 +39,23 @@ func (sm *SendMail) SendEmail(password string, email_type string) error {
 	// Set E-Mail sender
 	m.SetHeader("From", os.Getenv("SYSTEM_EMAIL"))
 
+	m.SetHeader("Subject", "Default Subject")
+
 	// Set E-Mail receivers
 	fmt.Print("the email address of the user who wants to change pswd is: " + sm.Email)
 	m.SetHeader("To", sm.Email)
 
-	// Set E-Mail subject
-	m.SetHeader("Subject", "Set/Reset User Login Password")
-
 	path := "./html/email_template.html"
 
 	if email_type == "Welcome" {
+		m.SetHeader("Subject", "Welcome to TruVest")
 		//templateData.Password = models.GetFrontEndUrl() + "/" + sm.Link.String()
 		path = "./html/welcome_email_template.html"
 		//fmt.Print(" " + path)
 	}
 	if email_type == "ResetPassword" {
+		m.SetHeader("Subject", "Your Password was Reset")
+
 		path = "./html/password_reset_email.html"
 	}
 

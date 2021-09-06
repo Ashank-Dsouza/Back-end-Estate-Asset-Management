@@ -5,7 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"net/http"
+	"time"
 
 	"bitbucket.org/staydigital/truvest-identity-management/api/auth"
 	"bitbucket.org/staydigital/truvest-identity-management/api/models"
@@ -472,8 +474,35 @@ func (server *Server) SendMail(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
+
+	Email := sendMail.Email
+	user := models.User{}
+	fetchUser, err := user.FindUserByEmail(server.DB, Email)
+
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	user_id := fetchUser.ID
+
+	rand.Seed(time.Now().UnixNano())
+
+	password := randSeq(10)
+
+	setPassword := models.Set_User_Password_Payload{}
+	setPassword.Password = password
+
+	err = setPassword.ResetPassword(server.DB, user_id, user_id)
+
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+
 	// err = sm.SendGridMail()
-	err = sendMail.SendEmail("", "ResetPassword")
+	err = sendMail.SendEmail(password, "ResetPassword")
+
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
@@ -543,4 +572,14 @@ func (server *Server) EnableUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	responses.JSON(w, http.StatusOK, models.PrepareResponse(updatedUser))
+}
+
+var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
+func randSeq(n int) string {
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
 }
