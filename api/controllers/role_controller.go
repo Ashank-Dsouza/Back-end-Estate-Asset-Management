@@ -294,6 +294,20 @@ func (server *Server) AddUsersToRole(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if rid == 4 || rid == 3 {
+		currentRid := uint32(0)
+
+		if rid == 4 {
+			currentRid = uint32(3)
+		} else {
+			currentRid = uint32(4)
+		}
+
+		roleUsers := models.User_Role{}
+		affectedRows := roleUsers.DeleteUsersFromRole(server.DB, currentRid, uids.Users)
+		fmt.Println("\nrows affected by ", affectedRows)
+	}
+
 	for i := range uids.Users {
 		ur := models.User_Role{}
 		ur.UserID = uids.Users[i]
@@ -354,7 +368,7 @@ func (server *Server) DeleteUsersFromRole(w http.ResponseWriter, r *http.Request
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return
 	}
-	_, err = roleUsers.DeleteUsersFromRole(server.DB, uint32(rid), uid)
+	_, err = roleUsers.DeleteUserFromRole(server.DB, uint32(rid), uid)
 	if err != nil {
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return

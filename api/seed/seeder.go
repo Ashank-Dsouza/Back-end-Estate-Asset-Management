@@ -12,6 +12,7 @@ import (
 var ConstID, err = uuid.NewRandom()
 var ConfirmationTOKEN, error = uuid.NewRandom()
 
+//while adding new roles, please add after the old ones. This is to keep the ids the same after the change.
 var roles = []models.Role{
 	{
 		Name:        "System Admin",
