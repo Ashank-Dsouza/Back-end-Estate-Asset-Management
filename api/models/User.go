@@ -405,7 +405,7 @@ func (upr *User_Password_Reset) CreateResetPIN(db *gorm.DB) error {
 	return nil
 }
 
-func (fup *Forgot_User_Password_Payload) ForgetPassword(db *gorm.DB) error {
+func (fup *Forgot_User_Password_Payload) SetPassword(db *gorm.DB) error {
 
 	// To hash the password
 	if len(fup.Password) < 1 {

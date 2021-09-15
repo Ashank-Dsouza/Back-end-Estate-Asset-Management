@@ -422,7 +422,7 @@ func (server *Server) SetPassword(w http.ResponseWriter, r *http.Request) {
 	responses.JSON(w, http.StatusNoContent, "")
 }
 
-// ForgotPassword godoc
+// ResetPassword godoc
 // @Summary Set the Password of the user if he has forgotten
 // @Description Set the Password of the user if he has forgotten.
 // @Tags User
@@ -430,8 +430,8 @@ func (server *Server) SetPassword(w http.ResponseWriter, r *http.Request) {
 // @Produce  json
 // @Param user body models.Forgot_User_Password_Payload true "Forgot Password"
 // @Success 200
-// @Router /users/forgotPassword [post]
-func (server *Server) ForgotPassword(w http.ResponseWriter, r *http.Request) {
+// @Router /user/resetPassword [put]
+func (server *Server) ResetPassword(w http.ResponseWriter, r *http.Request) {
 
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -444,7 +444,7 @@ func (server *Server) ForgotPassword(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
-	err = forgotPassword.ForgetPassword(server.DB)
+	err = forgotPassword.SetPassword(server.DB)
 	if err != nil {
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return
