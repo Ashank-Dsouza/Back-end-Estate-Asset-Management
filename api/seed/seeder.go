@@ -260,7 +260,7 @@ func Load(db *gorm.DB, username string, firstname string, lastname string, email
 		for i := range user_emails {
 			err = db.Debug().Model(&models.User_Email{}).Create(&user_emails[i]).Error
 			if err != nil {
-				log.Fatalf("cannot seed user_password_reset table: %v", err)
+				log.Fatalf("cannot seed users table: %v", err)
 			}
 		}
 
