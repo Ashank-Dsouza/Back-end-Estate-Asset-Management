@@ -374,6 +374,37 @@ func (sup *Set_User_Password_Payload) ResetPassword(db *gorm.DB, uid uuid.UUID, 
 	return nil
 }
 
+func (rpc *Reset_PIN_Confirm) ValidateResetPIN(db *gorm.DB) error {
+	PIN := rpc.PIN
+	// To hash the password
+	if len(PIN) < 1 {
+		return errors.New("Required PIN")
+	}
+
+	db = db.Debug().Model(&User_Password_Reset{}).Where("pin = ?", PIN).Take(&User_Password_Reset{}).UpdateColumns(
+		map[string]interface{}{
+			"enabled": true,
+		},
+	)
+	if db.Error != nil {
+		return db.Error
+	}
+	return nil
+}
+
+func (upr *User_Password_Reset) CreateResetPIN(db *gorm.DB) error {
+
+	if len(upr.PIN) < 1 {
+		return errors.New("Required PIN")
+	}
+
+	db = db.Debug().Model(&User_Password_Reset{}).Create(&upr)
+	if db.Error != nil {
+		return db.Error
+	}
+	return nil
+}
+
 func (fup *Forgot_User_Password_Payload) ForgetPassword(db *gorm.DB) error {
 
 	// To hash the password

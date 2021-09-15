@@ -40,6 +40,7 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/users/{id}/setPassword", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.SetPassword))).Methods("POST")
 	s.Router.HandleFunc("/users/forgotPassword", middleware.SetMiddlewareJSON(s.ForgotPassword)).Methods("POST")
 	s.Router.HandleFunc("/users/sendMail", middleware.SetMiddlewareJSON(s.SendMail)).Methods("POST")
+	s.Router.HandleFunc("/user/verifyPIN", middleware.SetMiddlewareJSON(s.VerifyPIN)).Methods("PUT")
 	s.Router.HandleFunc("/users/{id}/enableUser", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.EnableUser))).Methods("PUT")
 
 	// Permission routes

@@ -217,12 +217,12 @@ func Load(db *gorm.DB, username string, firstname string, lastname string, email
 
 	if os.Getenv("GORM_AUTOMIGRATE") == "true" {
 		// Enable below if you want to drop the existing tables
-		err := db.Debug().DropTableIfExists(&models.Role{}, &models.User_Email{}, &models.User{}, &models.User_Role{}, &models.Permission{}, &models.Role_Permission{}, models.User_Device{}, models.Refresh_Token{}).Error
+		err := db.Debug().DropTableIfExists(&models.Role{}, &models.User_Email{}, &models.User_Password_Reset{}, &models.User{}, &models.User_Role{}, &models.Permission{}, &models.Role_Permission{}, models.User_Device{}, models.Refresh_Token{}).Error
 		if err != nil {
 			log.Fatalf("cannot drop table: %v", err)
 		}
 
-		err = db.Debug().AutoMigrate(&models.User{}, &models.User_Email{}, &models.Role{}, &models.User_Role{}, &models.Permission{}, &models.Role_Permission{}, models.User_Device{}, models.Refresh_Token{}).Error
+		err = db.Debug().AutoMigrate(&models.User{}, &models.User_Email{}, &models.User_Password_Reset{}, &models.Role{}, &models.User_Role{}, &models.Permission{}, &models.Role_Permission{}, models.User_Device{}, models.Refresh_Token{}).Error
 		if err != nil {
 			log.Fatalf("cannot migrate table: %v", err)
 		}
@@ -260,7 +260,7 @@ func Load(db *gorm.DB, username string, firstname string, lastname string, email
 		for i := range user_emails {
 			err = db.Debug().Model(&models.User_Email{}).Create(&user_emails[i]).Error
 			if err != nil {
-				log.Fatalf("cannot seed users table: %v", err)
+				log.Fatalf("cannot seed user_password_reset table: %v", err)
 			}
 		}
 

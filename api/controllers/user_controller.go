@@ -452,6 +452,41 @@ func (server *Server) ForgotPassword(w http.ResponseWriter, r *http.Request) {
 	responses.JSON(w, http.StatusNoContent, "")
 }
 
+// VerifyPIN godoc
+// @Summary Take in a PIN and confirm that it is correct.
+// @Description Take in a PIN and confirm that it is correct.
+// @Tags User
+// @Accept  json
+// @Produce  json
+// @Param user body models.Reset_PIN_Confirm true
+// @Success 200
+// @Router /user/verifyPIN [put]
+func (server *Server) VerifyPIN(w http.ResponseWriter, r *http.Request) {
+	body, err := GetBody(w, r)
+
+	if err != nil {
+		return
+	}
+
+	ResetPIN := models.Reset_PIN_Confirm{}
+	err = json.Unmarshal(body, &ResetPIN)
+	if err != nil {
+		fmt.Println(err)
+		fmt.Println(body)
+		responses.ERROR(w, http.StatusExpectationFailed, err)
+		return
+	}
+
+	err = ResetPIN.ValidateResetPIN(server.DB)
+
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+
+	responses.JSON(w, http.StatusNoContent, "")
+}
+
 // SendMail godoc
 // @Summary Send a mail with a link for the user to reset password
 // @Description Send a mail with a link for the user to reset password. This can be used in combination with Forget Password API to make sure a legitimate user is trying to reset his password.
@@ -463,11 +498,12 @@ func (server *Server) ForgotPassword(w http.ResponseWriter, r *http.Request) {
 // @Router /users/sendMail [post]
 func (server *Server) SendMail(w http.ResponseWriter, r *http.Request) {
 
-	body, err := ioutil.ReadAll(r.Body)
+	body, err := GetBody(w, r)
+
 	if err != nil {
-		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
+
 	sendMail := models.SendMail{}
 	err = json.Unmarshal(body, &sendMail)
 	if err != nil {
@@ -476,38 +512,46 @@ func (server *Server) SendMail(w http.ResponseWriter, r *http.Request) {
 	}
 
 	Email := sendMail.Email
-	user := models.User{}
-	fetchUser, err := user.FindUserByEmail(server.DB, Email)
+	pin := GeneratePIN()
+
+	resetPasswordPIN := models.User_Password_Reset{
+		PIN:     pin,
+		Enabled: false,
+		Email:   Email,
+	}
+
+	err = resetPasswordPIN.CreateResetPIN(server.DB)
 
 	if err != nil {
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	user_id := fetchUser.ID
-
-	rand.Seed(time.Now().UnixNano())
-
-	password := randSeq(10)
-
-	setPassword := models.Set_User_Password_Payload{}
-	setPassword.Password = password
-
-	err = setPassword.ResetPassword(server.DB, user_id, user_id)
-
-	if err != nil {
-		responses.ERROR(w, http.StatusInternalServerError, err)
-		return
-	}
-
-	// err = sm.SendGridMail()
-	err = sendMail.SendEmail(password, "ResetPassword")
+	err = sendMail.SendEmail(pin, "ResetPassword")
 
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
 	responses.JSON(w, http.StatusNoContent, "")
+}
+
+func GetBody(w http.ResponseWriter, r *http.Request) ([]byte, error) {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+	}
+
+	fmt.Println("the body read is: ", body)
+	return body, err
+}
+
+func GeneratePIN() string {
+	rand.Seed(time.Now().UnixNano())
+
+	pin := randSeq(10)
+
+	return pin
 }
 
 // EnableUser godoc
