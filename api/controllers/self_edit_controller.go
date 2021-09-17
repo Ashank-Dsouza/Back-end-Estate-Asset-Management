@@ -110,11 +110,7 @@ func (server *Server) GetTokenId(w http.ResponseWriter, r *http.Request) uuid.UU
 // @Security ApiKeyAuth
 // @Router /confirmEmail [put]
 func (server *Server) ConfirmEmail(w http.ResponseWriter, r *http.Request) {
-	err := auth.CheckBlacklistedJWT(server.TTLCache, r)
-	if err != nil {
-		responses.ERROR(w, http.StatusUnauthorized, err)
-		return
-	}
+	fmt.Println("inside ConfirmEmail()")
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
@@ -127,14 +123,7 @@ func (server *Server) ConfirmEmail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	uid := server.ExtractUserId(r)
-
-	if uid == uuid.Nil {
-		responses.ERROR(w, http.StatusUnprocessableEntity, err)
-		return
-	}
-
-	updatedEmail, err := confirm_email.ConfirmAUserEmail(server.DB, uid)
+	updatedEmail, err := confirm_email.ConfirmAUserEmail(server.DB)
 
 	if err != nil {
 		responses.ERROR(w, http.StatusUnauthorized, err)
