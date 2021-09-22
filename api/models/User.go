@@ -2,7 +2,9 @@ package models
 
 import (
 	"errors"
+	"fmt"
 	"html"
+	"log"
 	"strings"
 	"time"
 	"unsafe"
@@ -24,7 +26,7 @@ type User struct {
 	CreatedBy uuid.UUID `gorm:"type:uuid;not null" json:"created_by"`
 	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 	UpdatedBy uuid.UUID `gorm:"type:uuid;not null" json:"updated_by"`
-	Enabled   bool      `gorm:"default:true" json:"enabled"`
+	Enabled   bool      `gorm:"default:false" json:"enabled"`
 	Provider  string    `gorm:"size:255;not null" json:"provider"`
 	Roles     []*Role   `gorm:"many2many:user_roles" json:"roles,omitempty"`
 }
@@ -122,7 +124,7 @@ func (u *User) PrepareSignUp() {
 	u.CreatedBy = id
 	u.UpdatedAt = time.Now()
 	u.UpdatedBy = id
-	u.Enabled = true
+	u.Enabled = false
 	u.Provider = "local"
 }
 
@@ -273,6 +275,10 @@ func (email *Confirm_email) ConfirmAUserEmail(db *gorm.DB) (*User_Email, error) 
 			"confirmed": true,
 		},
 	).Error
+	updatedUser := User{}
+	updatedUser.Enabled = true
+	_, err = updatedUser.EnableDisableUser(db, u.ID, u.ID)
+
 	if err != nil {
 		return &User_Email{}, err
 	} else {
@@ -303,6 +309,7 @@ func (u *User) EditAUser(db *gorm.DB, uid uuid.UUID, tuid uuid.UUID) (*User, err
 }
 
 func (u *User) EnableDisableUser(db *gorm.DB, uid uuid.UUID, tuid uuid.UUID) (*User, error) {
+	fmt.Println("The call for EnableDisableUser user with enable value: ", u.Enabled)
 
 	db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).UpdateColumns(
 		map[string]interface{}{
@@ -381,8 +388,24 @@ func (upr *User_Password_Reset) CreateResetPIN(db *gorm.DB) error {
 	if len(upr.PIN) < 1 {
 		return errors.New("Required PIN")
 	}
+	extractedUpr := User_Password_Reset{}
 
-	db = db.Debug().Model(&User_Password_Reset{}).Create(&upr)
+	err := db.Debug().Model(&User_Password_Reset{}).Where("email = ?", upr.Email).Take(&extractedUpr).Error
+
+	if err != nil {
+		db = db.Debug().Model(&User_Password_Reset{}).Create(&upr)
+		if db.Error != nil {
+			return db.Error
+		} else {
+			return nil
+		}
+	}
+
+	db = db.Debug().Model(&User_Password_Reset{}).Where("email = ?", upr.Email).Take(&User_Password_Reset{}).UpdateColumns(
+		map[string]interface{}{
+			"pin": upr.PIN,
+		},
+	)
 	if db.Error != nil {
 		return db.Error
 	}
@@ -431,4 +454,34 @@ func (u *User) WhoAmI(db *gorm.DB, uid uuid.UUID) (*User, error) {
 		return &User{}, errors.New("User Not Found")
 	}
 	return u, nil
+}
+
+func (upr *User_Password_Reset) IsUserPINEnabled(db *gorm.DB) (error, bool) {
+	Email := upr.Email
+	if len(Email) < 1 {
+		log.Fatalf("Email not give. Stack: IsUserPINEnabled")
+		return errors.New("Required Email: IsUserPINEnabled: 457"), false
+	}
+	updatedUpr := &User_Password_Reset{}
+
+	err := db.Debug().Model(&User_Password_Reset{}).Where("email = ?", Email).Take(&updatedUpr).Error
+	if err != nil {
+		return db.Error, false
+	}
+
+	if !updatedUpr.Enabled {
+		return nil, false
+	}
+
+	return nil, true
+}
+
+func (upr *User_Password_Reset) DeleteResetPIN(db *gorm.DB) error {
+	Email := upr.Email
+
+	db = db.Debug().Model(&User_Password_Reset{}).Where("email = ?", Email).Take(&User_Password_Reset{}).Delete(&User_Password_Reset{})
+	if db.Error != nil {
+		return db.Error
+	}
+	return nil
 }

@@ -54,6 +54,8 @@ func (server *Server) SignUp(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
+	Email := user.Email
+
 	var password string
 	if user.Password == "" {
 		password = utils.RandSeq()
@@ -83,7 +85,7 @@ func (server *Server) SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	sm := models.SendMail{}
-	sm.Email = userCreated.Email
+	sm.Email = Email
 
 	var link = models.GetFrontEndUrl() + "/confirm-email/" + ConfirmationTOKEN.String()
 	err = sm.SendEmail(link, "Welcome")

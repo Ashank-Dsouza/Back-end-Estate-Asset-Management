@@ -444,11 +444,37 @@ func (server *Server) ResetPassword(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
+	Email := forgotPassword.Email
+
+	resetPassword := models.User_Password_Reset{}
+	resetPassword.Email = forgotPassword.Email
+
+	err, Enabled := resetPassword.IsUserPINEnabled(server.DB)
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	if !Enabled {
+		responses.ERROR(w, http.StatusUnauthorized, err)
+		return
+	} else {
+		resetPassword.Email = Email
+		err = resetPassword.DeleteResetPIN(server.DB)
+		if err != nil {
+			responses.ERROR(w, http.StatusInternalServerError, err)
+			return
+		}
+	}
+
 	err = forgotPassword.SetPassword(server.DB)
 	if err != nil {
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return
 	}
+	//removes the reset info row
+	resetPassword.Email = Email
+
 	responses.JSON(w, http.StatusNoContent, "")
 }
 
@@ -512,7 +538,7 @@ func (server *Server) SendMail(w http.ResponseWriter, r *http.Request) {
 	}
 
 	Email := sendMail.Email
-	pin := GeneratePIN()
+	pin := GeneratePIN(10)
 
 	resetPasswordPIN := models.User_Password_Reset{
 		PIN:     pin,
@@ -546,10 +572,10 @@ func GetBody(w http.ResponseWriter, r *http.Request) ([]byte, error) {
 	return body, err
 }
 
-func GeneratePIN() string {
+func GeneratePIN(len int) string {
 	rand.Seed(time.Now().UnixNano())
 
-	pin := randSeq(10)
+	pin := randSeq(len)
 
 	return pin
 }
