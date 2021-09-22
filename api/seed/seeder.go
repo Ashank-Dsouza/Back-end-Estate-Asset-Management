@@ -238,6 +238,7 @@ func Load(db *gorm.DB, username string, firstname string, lastname string, email
 				Provider:  "local",
 				CreatedBy: ConstID,
 				UpdatedBy: ConstID,
+				Enabled:   true,
 			},
 		}
 
