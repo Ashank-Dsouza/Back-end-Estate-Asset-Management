@@ -2,7 +2,7 @@ package models
 
 const (
 	protocol = "http"
-	host     = "localhost"
+	host     = "3.108.41.85"
 	port     = "3000"
 )
 
