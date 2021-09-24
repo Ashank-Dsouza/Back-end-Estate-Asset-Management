@@ -540,6 +540,8 @@ func (server *Server) SendMail(w http.ResponseWriter, r *http.Request) {
 	Email := sendMail.Email
 	pin := GeneratePIN(10)
 
+	var link = models.GetFrontEndUrl() + "/code-confirmation-page/" + pin
+
 	resetPasswordPIN := models.User_Password_Reset{
 		PIN:     pin,
 		Enabled: false,
@@ -553,7 +555,7 @@ func (server *Server) SendMail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = sendMail.SendEmail(pin, "ResetPassword")
+	err = sendMail.SendEmail(link, "ResetPassword")
 
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)

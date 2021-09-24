@@ -19,7 +19,7 @@ type SendMail struct {
 	Email string
 }
 
-func (sm *SendMail) SendEmail(password string, email_type string) error {
+func (sm *SendMail) SendEmail(link string, email_type string) error {
 
 	if len(sm.Email) < 1 {
 		return errors.New("Required Email")
@@ -31,7 +31,7 @@ func (sm *SendMail) SendEmail(password string, email_type string) error {
 	templateData := struct {
 		Password string
 	}{
-		Password: password,
+		Password: link,
 	}
 
 	m := gomail.NewMessage()
