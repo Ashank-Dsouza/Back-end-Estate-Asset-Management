@@ -11,7 +11,9 @@ import (
 func SetMiddlewareJSON(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Header().Set("Access-Control-Allow-Origin", "http://3.108.41.85:3000")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		//w.Header().Set("Access-Control-Allow-Methods", "GET")
+		//w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 		next(w, r)
 	}
 }
