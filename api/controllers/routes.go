@@ -10,60 +10,60 @@ import (
 func (s *Server) initializeRoutes() {
 
 	// Index Page route. Sample page to demo OAuth2
-	s.Router.HandleFunc("/", s.IndexPage).Methods("GET")
+	s.Router.HandleFunc("/", s.IndexPage).Methods("GET", "OPTIONS")
 
 	// Heartbeat Route
-	s.Router.HandleFunc("/heartbeat", middleware.SetMiddlewareJSON(s.Heartbeat)).Methods("GET")
+	s.Router.HandleFunc("/heartbeat", middleware.SetMiddlewareJSON(s.Heartbeat)).Methods("GET", "OPTIONS")
 
 	// SignUp Route
-	s.Router.HandleFunc("/signup", middleware.SetMiddlewareJSON(s.SignUp)).Methods("POST")
+	s.Router.HandleFunc("/signup", middleware.SetMiddlewareJSON(s.SignUp)).Methods("POST", "OPTIONS")
 
 	// Login Route
-	s.Router.HandleFunc("/login", middleware.SetMiddlewareJSON(s.Login)).Methods("POST")
-	s.Router.HandleFunc("/refresh", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.Refresh))).Methods("POST")
-	s.Router.HandleFunc("/logout", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.Logout))).Methods("POST")
-	s.Router.HandleFunc("/confirmEmail", middleware.SetMiddlewareJSON(s.ConfirmEmail)).Methods("PUT")
+	s.Router.HandleFunc("/login", middleware.SetMiddlewareJSON(s.Login)).Methods("POST", "OPTIONS")
+	s.Router.HandleFunc("/refresh", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.Refresh))).Methods("POST", "OPTIONS")
+	s.Router.HandleFunc("/logout", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.Logout))).Methods("POST", "OPTIONS")
+	s.Router.HandleFunc("/confirmEmail", middleware.SetMiddlewareJSON(s.ConfirmEmail)).Methods("PUT", "OPTIONS")
 
 	// OAuth Route
-	s.Router.HandleFunc("/auth/{provider}", middleware.SetMiddlewareJSON(s.OauthSignIn)).Methods("GET")
-	s.Router.HandleFunc("/auth/{provider}/callback", middleware.SetMiddlewareJSON(s.OauthSuccessCallback)).Methods("GET")
-	s.Router.HandleFunc("/logout/{provider}", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.OauthLogout))).Methods("POST")
+	s.Router.HandleFunc("/auth/{provider}", middleware.SetMiddlewareJSON(s.OauthSignIn)).Methods("GET", "OPTIONS")
+	s.Router.HandleFunc("/auth/{provider}/callback", middleware.SetMiddlewareJSON(s.OauthSuccessCallback)).Methods("GET", "OPTIONS")
+	s.Router.HandleFunc("/logout/{provider}", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.OauthLogout))).Methods("POST", "OPTIONS")
 
 	// Users routes
-	s.Router.HandleFunc("/user/me", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.GetLoggedInUser))).Methods("GET")
-	s.Router.HandleFunc("/user/edit/{id}", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.EditUser))).Methods("PUT")
-	s.Router.HandleFunc("/users", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.CreateUser))).Methods("POST")
-	s.Router.HandleFunc("/users", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.GetUsers))).Methods("GET")
-	s.Router.HandleFunc("/users/{id}", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.GetUser))).Methods("GET")
-	s.Router.HandleFunc("/users/{id}", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.UpdateUser))).Methods("PUT")
-	s.Router.HandleFunc("/users/{id}", middleware.SetMiddlewareAuthentication(s.DeleteUser)).Methods("DELETE")
-	s.Router.HandleFunc("/users/{id}/setPassword", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.SetPassword))).Methods("POST")
-	s.Router.HandleFunc("/user/resetPassword", middleware.SetMiddlewareJSON(s.ResetPassword)).Methods("PUT")
-	s.Router.HandleFunc("/users/sendMail", middleware.SetMiddlewareJSON(s.SendMail)).Methods("POST")
-	s.Router.HandleFunc("/user/verifyPIN", middleware.SetMiddlewareJSON(s.VerifyPIN)).Methods("PUT")
-	s.Router.HandleFunc("/users/{id}/enableUser", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.EnableUser))).Methods("PUT")
+	s.Router.HandleFunc("/user/me", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.GetLoggedInUser))).Methods("GET", "OPTIONS")
+	s.Router.HandleFunc("/user/edit/{id}", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.EditUser))).Methods("PUT", "OPTIONS")
+	s.Router.HandleFunc("/users", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.CreateUser))).Methods("POST", "OPTIONS", "OPTIONS")
+	s.Router.HandleFunc("/users", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.GetUsers))).Methods("GET", "OPTIONS", "OPTIONS")
+	s.Router.HandleFunc("/users/{id}", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.GetUser))).Methods("GET", "OPTIONS")
+	s.Router.HandleFunc("/users/{id}", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.UpdateUser))).Methods("PUT", "OPTIONS")
+	s.Router.HandleFunc("/users/{id}", middleware.SetMiddlewareAuthentication(s.DeleteUser)).Methods("DELETE", "OPTIONS")
+	s.Router.HandleFunc("/users/{id}/setPassword", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.SetPassword))).Methods("POST", "OPTIONS")
+	s.Router.HandleFunc("/user/resetPassword", middleware.SetMiddlewareJSON(s.ResetPassword)).Methods("PUT", "OPTIONS")
+	s.Router.HandleFunc("/users/sendMail", middleware.SetMiddlewareJSON(s.SendMail)).Methods("POST", "OPTIONS")
+	s.Router.HandleFunc("/user/verifyPIN", middleware.SetMiddlewareJSON(s.VerifyPIN)).Methods("PUT", "OPTIONS")
+	s.Router.HandleFunc("/users/{id}/enableUser", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.EnableUser))).Methods("PUT", "OPTIONS")
 
 	// Permission routes
-	s.Router.HandleFunc("/permissions", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.CreatePermission))).Methods("POST")
-	s.Router.HandleFunc("/permissions", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.GetPermissions))).Methods("GET")
-	s.Router.HandleFunc("/permissions/{id}", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.GetPermission))).Methods("GET")
-	s.Router.HandleFunc("/permissions/{id}", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.UpdatePermission))).Methods("PUT")
-	s.Router.HandleFunc("/permissions/{id}", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.DeletePermission))).Methods("DELETE")
+	s.Router.HandleFunc("/permissions", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.CreatePermission))).Methods("POST", "OPTIONS")
+	s.Router.HandleFunc("/permissions", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.GetPermissions))).Methods("GET", "OPTIONS")
+	s.Router.HandleFunc("/permissions/{id}", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.GetPermission))).Methods("GET", "OPTIONS")
+	s.Router.HandleFunc("/permissions/{id}", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.UpdatePermission))).Methods("PUT", "OPTIONS")
+	s.Router.HandleFunc("/permissions/{id}", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.DeletePermission))).Methods("DELETE", "OPTIONS")
 
 	// Roles routes
-	s.Router.HandleFunc("/roles", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.CreateRole))).Methods("POST")
-	s.Router.HandleFunc("/roles", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.GetRoles))).Methods("GET")
-	s.Router.HandleFunc("/roles/{id}", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.GetRole))).Methods("GET")
-	s.Router.HandleFunc("/roles/{id}", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.UpdateRole))).Methods("PUT")
-	s.Router.HandleFunc("/roles/{id}", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.DeleteRole))).Methods("DELETE")
+	s.Router.HandleFunc("/roles", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.CreateRole))).Methods("POST", "OPTIONS")
+	s.Router.HandleFunc("/roles", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.GetRoles))).Methods("GET", "OPTIONS")
+	s.Router.HandleFunc("/roles/{id}", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.GetRole))).Methods("GET", "OPTIONS")
+	s.Router.HandleFunc("/roles/{id}", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.UpdateRole))).Methods("PUT", "OPTIONS")
+	s.Router.HandleFunc("/roles/{id}", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.DeleteRole))).Methods("DELETE", "OPTIONS")
 
 	// Map Users to Roles routes
-	s.Router.HandleFunc("/roles/{id}/users", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.AddUsersToRole))).Methods("POST")
-	s.Router.HandleFunc("/roles/{id1}/users/{id2}", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.DeleteUsersFromRole))).Methods("DELETE")
+	s.Router.HandleFunc("/roles/{id}/users", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.AddUsersToRole))).Methods("POST", "OPTIONS")
+	s.Router.HandleFunc("/roles/{id1}/users/{id2}", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.DeleteUsersFromRole))).Methods("DELETE", "OPTIONS")
 
 	// Map Permissions to Roles routes
-	s.Router.HandleFunc("/roles/{id}/permissions", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.AddPermissionsToRole))).Methods("POST")
-	s.Router.HandleFunc("/roles/{id1}/permissions/{id2}", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.DeletePermissionsFromRole))).Methods("DELETE")
+	s.Router.HandleFunc("/roles/{id}/permissions", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.AddPermissionsToRole))).Methods("POST", "OPTIONS")
+	s.Router.HandleFunc("/roles/{id1}/permissions/{id2}", middleware.SetMiddlewareJSON(middleware.SetMiddlewareAuthentication(s.DeletePermissionsFromRole))).Methods("DELETE", "OPTIONS")
 
 	// Swagger
 	s.Router.PathPrefix("/swagger").Handler(httpSwagger.WrapHandler)
