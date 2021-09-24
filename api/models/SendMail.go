@@ -54,7 +54,7 @@ func (sm *SendMail) SendEmail(link string, email_type string) error {
 		//fmt.Print(" " + path)
 	}
 	if email_type == "ResetPassword" {
-		m.SetHeader("Subject", "Your Password was Reset")
+		m.SetHeader("Subject", "Reset Truvest Password")
 
 		path = "./html/password_reset_email.html"
 	}
