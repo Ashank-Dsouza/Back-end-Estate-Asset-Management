@@ -53,9 +53,8 @@ func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, D
 }
 
 func (server *Server) Run(addr string, allowedOrigins []string) {
-	c := cors.New(cors.Options{
-		AllowedOrigins: allowedOrigins,
-	})
+
+	c := cors.AllowAll()
 
 	fmt.Println("Listening to port " + addr)
 	log.Fatal(http.ListenAndServe(addr, c.Handler(server.Router)))
